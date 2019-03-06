@@ -1,9 +1,8 @@
 import java.text.SimpleDateFormat
 
 pipeline {
-  agent {
-    label "test"
-  }
+  agent any
+  
   options {
     buildDiscarder(logRotator(numToKeepStr: '2'))
     disableConcurrentBuilds()
@@ -23,10 +22,12 @@ pipeline {
         branch "master"
       }
       steps {
-        dockerLogin()
-        sh "docker tag vfarcic/jenkins-swarm-agent vfarcic/jenkins-swarm-agent:${currentBuild.displayName}"
-        sh "docker image push vfarcic/jenkins-swarm-agent:latest"
-        sh "docker image push vfarcic/jenkins-swarm-agent:${currentBuild.displayName}"
+//        dockerLogin()
+        withRegistry("http://192.168.99.105:5000") {
+          sh "docker tag vfarcic/jenkins-swarm-agent vfarcic/jenkins-swarm-agent:${currentBuild.displayName}"
+          sh "docker image push vfarcic/jenkins-swarm-agent:latest"
+          sh "docker image push vfarcic/jenkins-swarm-agent:${currentBuild.displayName}"
+        }
       }
     }
     stage("deploy") {
