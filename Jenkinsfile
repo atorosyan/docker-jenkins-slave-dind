@@ -14,7 +14,7 @@ pipeline {
           def dateFormat = new SimpleDateFormat("yy.MM.dd")
           currentBuild.displayName = dateFormat.format(new Date()) + "-" + env.BUILD_NUMBER
         }
-        sh "docker image build -t vfarcic/jenkins-swarm-agent ."
+        sh "docker image build -t artashes/jenkins-swarm-agent ."
       }
     }
     stage("release") {
@@ -24,9 +24,9 @@ pipeline {
       steps {
 //        dockerLogin()
         withRegistry("http://192.168.99.105:5000") {
-          sh "docker tag vfarcic/jenkins-swarm-agent vfarcic/jenkins-swarm-agent:${currentBuild.displayName}"
-          sh "docker image push vfarcic/jenkins-swarm-agent:latest"
-          sh "docker image push vfarcic/jenkins-swarm-agent:${currentBuild.displayName}"
+          sh "docker tag artashes/jenkins-swarm-agent artashes/jenkins-swarm-agent:${currentBuild.displayName}"
+          sh "docker image push artashes/jenkins-swarm-agent:latest"
+          sh "docker image push artashes/jenkins-swarm-agent:${currentBuild.displayName}"
         }
       }
     }
@@ -46,7 +46,7 @@ pipeline {
     success {
       slackSend(
         color: "good",
-        message: "vfarcic/jenkins-swarm-agent:${currentBuild.displayName} was deployed to the cluster. Verify that it works correctly!"
+        message: "artashes/jenkins-swarm-agent:${currentBuild.displayName} was deployed to the cluster. Verify that it works correctly!"
       )
     }
     failure {
